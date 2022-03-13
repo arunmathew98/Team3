@@ -47,6 +47,16 @@ const passport = auth.getPassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
+// set up rate limiter: maximum of five requests per minute
+var RateLimit = require('express-rate-limit');
+var limiter = new RateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 5
+});
+
+// apply rate limiter to all requests
+app.use(limiter);
+
 app.use(auth.authenticationByDefault);
 app.use(auth.addSecurityHeaders);
 app.use('/public/jquery',express.static(path.join(__dirname, 'node_modules/jquery')));
@@ -127,6 +137,15 @@ app.get("/public/captcha.png", auth.getCaptcha);
 
 app.post("/public/register", auth.registerLocalUser);
 
+// set up rate limiter: maximum of five requests per minute
+var RateLimit = require('express-rate-limit');
+var limiter = new RateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 5
+});
+
+// apply rate limiter to all requests
+app.use(limiter);
 //this one is an authenticated request because is under /api
 app.post("/api/localUser/updateUser", auth.updateLocalUser);
 
@@ -178,6 +197,15 @@ function(req, res) {
   res.redirect('/main');
 });
 
+// set up rate limiter: maximum of five requests per minute
+var RateLimit = require('express-rate-limit');
+var limiter = new RateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 5
+});
+
+// apply rate limiter to all requests
+app.use(limiter);
 app.get("/public/authFailure",(req,res) => {
     res.send('Unable to login');
 });
@@ -218,7 +246,15 @@ app.get("/public/badge/:code/image.png",async(req,res) => {
   res.set("Content-Type", "image/png");
   res.send(buffer);
 });
+// set up rate limiter: maximum of five requests per minute
+var RateLimit = require('express-rate-limit');
+var limiter = new RateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 5
+});
 
+// apply rate limiter to all requests
+app.use(limiter);
 app.get('/logout', auth.logout);
 
 app.get('/main', (req, res) => {
@@ -476,7 +512,15 @@ app.get('/api/users',  (req, res) => {
    });
 });
 
+// set up rate limiter: maximum of five requests per minute
+var RateLimit = require('express-rate-limit');
+var limiter = new RateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 5
+});
 
+// apply rate limiter to all requests
+app.use(limiter);
 //creates a team setting the current user as owner of the team
 app.post('/api/teams', auth.ensureApiAuth, (req, res) => {
    var teamName = req.body.name;
